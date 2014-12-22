@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 public class QuizActivity extends ActionBarActivity {
     private static final String TAG = "QuizActivity";
+    private static final String KEY_INDEX = "index";
     private Button mTrueButton;
     private Button mFalseButton;
     private ImageButton mPrevButton;
@@ -29,8 +30,12 @@ public class QuizActivity extends ActionBarActivity {
     private int mCurrentIndex = 0;
 
     private void updateQuestion() {
-        int question = mQuestionBank[mCurrentIndex].getQuestion();
-        mQuestionTextView.setText(question);
+        try {
+            int question = mQuestionBank[mCurrentIndex].getQuestion();
+            mQuestionTextView.setText(question);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            Log.e(TAG, "Index was out of bounds", ex);
+        }
     }
 
     private void checkAnswer(boolean userPressTrue) {
@@ -88,8 +93,6 @@ public class QuizActivity extends ActionBarActivity {
             }
         });
 
-        updateQuestion();
-
         mTrueButton = (Button)findViewById(R.id.true_button);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +108,19 @@ public class QuizActivity extends ActionBarActivity {
                 checkAnswer(false);
             }
         });
+
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+
+        updateQuestion();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
     @Override
@@ -117,6 +133,7 @@ public class QuizActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
+        Log.d(TAG, "Current question index: " + mCurrentIndex);
     }
 
     @Override
