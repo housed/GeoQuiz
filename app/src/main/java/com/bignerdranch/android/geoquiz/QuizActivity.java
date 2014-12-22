@@ -15,11 +15,11 @@ import android.widget.Toast;
 public class QuizActivity extends ActionBarActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
-    private Button mTrueButton;
-    private Button mFalseButton;
-    private ImageButton mPrevButton;
-    private ImageButton mNextButton;
-    private TextView mQuestionTextView;
+    private Button mTrueButton = null;
+    private Button mFalseButton = null;
+    private ImageButton mPrevButton = null;
+    private ImageButton mNextButton = null;
+    private TextView mQuestionTextView = null;
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
             new TrueFalse(R.string.question_oceans, true),
             new TrueFalse(R.string.question_mideast, false),
