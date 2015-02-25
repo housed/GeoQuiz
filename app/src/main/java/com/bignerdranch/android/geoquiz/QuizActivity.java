@@ -1,5 +1,6 @@
 package com.bignerdranch.android.geoquiz;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ public class QuizActivity extends ActionBarActivity {
     private static final String KEY_INDEX = "index";
     private Button mTrueButton = null;
     private Button mFalseButton = null;
+    private Button mCheatButton = null;
     private ImageButton mPrevButton = null;
     private ImageButton mNextButton = null;
     private TextView mQuestionTextView = null;
@@ -28,6 +30,16 @@ public class QuizActivity extends ActionBarActivity {
             new TrueFalse(R.string.question_asia, true),
     };
     private int mCurrentIndex = 0;
+    private boolean mIsCheater = false;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+
+        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+    }
 
     private void updateQuestion() {
         try {
@@ -106,6 +118,17 @@ public class QuizActivity extends ActionBarActivity {
             @Override
             public void onClick(View v){
                 checkAnswer(false);
+            }
+        });
+
+        mCheatButton = (Button)findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(QuizActivity.this, CheatActivity.class);
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+                startActivityForResult(i, 0);
             }
         });
 
