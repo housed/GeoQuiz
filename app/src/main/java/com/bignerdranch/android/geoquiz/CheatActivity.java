@@ -1,6 +1,7 @@
 package com.bignerdranch.android.geoquiz;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.os.Bundle;
@@ -16,9 +17,11 @@ public class CheatActivity extends ActionBarActivity {
     public static final String EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown";
     private static final String KEY_CHEAT = "cheat";
+    public static final int androidOS = Build.VERSION.SDK_INT;
     private boolean mAnswerIsTrue = false;
     private boolean mIsAnswerShown = false;
     private TextView mAnswerTextView = null;
+    private TextView mAPITextView = null;
     private Button mShowAnswer = null;
 
     private void setAnswerShownResult() {
@@ -55,6 +58,9 @@ public class CheatActivity extends ActionBarActivity {
                 setAnswerShownResult();
             }
         });
+
+        mAPITextView = (TextView)findViewById(R.id.apiTextView);
+        mAPITextView.setText("API Level " + androidOS);
 
         if (savedInstanceState != null) {
             mIsAnswerShown = savedInstanceState.getBoolean(KEY_CHEAT);
