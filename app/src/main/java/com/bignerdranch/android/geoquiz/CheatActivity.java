@@ -2,6 +2,7 @@ package com.bignerdranch.android.geoquiz;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,16 +12,18 @@ import android.widget.TextView;
 
 
 public class CheatActivity extends ActionBarActivity {
-
+    private static final String TAG = "CheatActivity";
     public static final String EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown";
+    private static final String KEY_CHEAT = "cheat";
     private boolean mAnswerIsTrue = false;
+    private boolean mIsAnswerShown = false;
     private TextView mAnswerTextView = null;
     private Button mShowAnswer = null;
 
-    private void setAnswerShownResult(boolean isAnswerShown) {
+    private void setAnswerShownResult() {
         Intent data = new Intent();
-        data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        data.putExtra(EXTRA_ANSWER_SHOWN, mIsAnswerShown);
         setResult(RESULT_OK, data);
     }
 
@@ -32,7 +35,8 @@ public class CheatActivity extends ActionBarActivity {
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         // Answer will not be shown until user presses the button
-        setAnswerShownResult(false);
+        mIsAnswerShown = false;
+        setAnswerShownResult();
 
         mAnswerTextView = (TextView)findViewById(R.id.answerTextView);
 
@@ -47,12 +51,24 @@ public class CheatActivity extends ActionBarActivity {
                 else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
-
-                setAnswerShownResult(true);
+                mIsAnswerShown = true;
+                setAnswerShownResult();
             }
         });
+
+        if (savedInstanceState != null) {
+            mIsAnswerShown = savedInstanceState.getBoolean(KEY_CHEAT);
+        }
+
+        setAnswerShownResult();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putBoolean(KEY_CHEAT, mIsAnswerShown);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
